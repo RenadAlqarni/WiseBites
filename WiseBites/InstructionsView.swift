@@ -63,7 +63,7 @@ struct InstructionCard: View {
                 }
         }
         .padding(.vertical, 40)
-        .frame(maxWidth: .infinity, minHeight: 180) // Fixed height (adjust as needed)
+        .frame(maxWidth: .infinity)
         .background(Color.orange.opacity(0.2))
         .cornerRadius(15)
     }
