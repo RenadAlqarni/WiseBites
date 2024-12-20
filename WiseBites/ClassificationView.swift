@@ -43,7 +43,9 @@ struct ClassificationView: View {
                 .padding(.horizontal, 40)
             }
             .padding(.vertical, 40)
+            
         }
+        .tint(Color.black)
     }
 }
 
