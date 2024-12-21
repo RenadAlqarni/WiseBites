@@ -22,7 +22,8 @@ struct InstructionsView: View {
             .padding(.vertical, 20)
             .navigationTitle("Instructions")
             .tint(Color.black)
-        }
+            
+        }.navigationBarBackButtonHidden(true)
     }
 }
 

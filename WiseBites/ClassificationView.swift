@@ -10,7 +10,7 @@ import SwiftUI
 struct ClassificationView: View {
     var body: some View {
         NavigationView {
-            VStack(spacing: 20) {
+            VStack(spacing: 30) {
                 Image("Happy")
                     .resizable()
                     .scaledToFit()
@@ -34,7 +34,7 @@ struct ClassificationView: View {
                 NavigationLink(destination: InstructionsView()) {
                     Text("Show The Consumption Instructions")
                         .foregroundColor(.white)
-                        .font(.system(size: 17, weight: .semibold))
+                        .font(.system(size: 15, weight: .semibold))
                         .padding()
                         .frame(maxWidth: .infinity)
                         .background(Color.orange)
@@ -46,6 +46,7 @@ struct ClassificationView: View {
             
         }
         .tint(Color.black)
+        
     }
 }
 
