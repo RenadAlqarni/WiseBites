@@ -9,9 +9,14 @@ import SwiftUI
 
 @main
 struct WiseBitesApp: App {
+    @StateObject private var vm = AppViewModel()
     var body: some Scene {
         WindowGroup {
             SplashScreenView()
+                .environmentObject(vm)
+                .task {
+                    await vm.requestDataScannerAccessStatus()
+                }
         }
     }
 }

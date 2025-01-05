@@ -10,8 +10,8 @@ import VisionKit
 import AVFoundation
 
 struct CameraView: View {
-    @State var isShowingScanner = true
-    @State private var scannedText = ""
+    @State private var isShowingScanner = true
+    @State private var recognizedItems: [RecognizedItem] = []
     @State private var isFlashOn = false
     @State private var isEducationalViewPresented = false
 
@@ -19,28 +19,44 @@ struct CameraView: View {
         NavigationView {
             ZStack {
                 if DataScannerViewController.isSupported && DataScannerViewController.isAvailable {
-                    // Full-screen camera preview
-                    DataScannerRepresentable(
-                        shouldStartScanning: $isShowingScanner,
-                        scannedText: $scannedText,
-                        dataToScanFor: [.barcode(symbologies: [.qr])]
+                    // Barcode scanner view
+                    DataScannerView(
+                        recognizedItems: $recognizedItems,
+                        recognizedDataType: .barcode(),
+                        recognizesMultipleItems: true
                     )
-                    .edgesIgnoringSafeArea(.all) // Ensures the camera takes up the full screen
+                    .edgesIgnoringSafeArea(.all)
 
                     VStack {
                         Spacer()
 
-                        // Scanned Text Display
-//                        Text(scannedText)
-//                            .padding()
-//                            .background(Color.white)
-//                            .foregroundColor(.black)
-//                            .cornerRadius(8)
-//                            .padding(.bottom, 50)
+                        // Recognized Text Display
+                        ScrollView {
+                            if !recognizedItems.isEmpty {
+                                ForEach(recognizedItems, id: \.id) { item in
+                                    if case let .barcode(barcode) = item {
+                                        Text(barcode.payloadStringValue ?? "Unknown Barcode")
+                                            .padding()
+                                            .background(Color.white)
+                                            .foregroundColor(.black)
+                                            .cornerRadius(8)
+                                            .padding(.horizontal)
+                                    }
+                                }
+                            } else {
+                                Text("Point the camera at a barcode to scan")
+                                    .padding()
+                                    .background(Color.white)
+                                    .foregroundColor(.gray)
+                                    .cornerRadius(8)
+                                    .padding(.horizontal)
+                            }
+                        }
+                        .frame(height: 120)
 
-                        // Buttons: Flash, Lamp, and Take a Picture
+                        // Action Buttons: Flash, Educational, and Capture
                         HStack {
-                            // Lamp Button
+                            // Educational View Button
                             Button(action: {
                                 isEducationalViewPresented = true
                             }) {
@@ -56,25 +72,23 @@ struct CameraView: View {
 
                             Spacer()
 
-                            // Take a Picture Button
+                            // Capture Button (Navigation to ClassificationView)
                             NavigationLink(destination: ClassificationView()) {
                                 ZStack {
-                                    // Outer green circle
                                     Circle()
-                                        .stroke(Color.green, lineWidth: 4) // Adjust thickness if needed
-                                        .frame(width: 80, height: 80) // Slightly larger for the outline
+                                        .stroke(Color.green, lineWidth: 4)
+                                        .frame(width: 80, height: 80)
 
-                                    // Inner white circle
                                     Circle()
                                         .fill(Color.white)
-                                        .frame(width: 70, height: 70) // Size of the main button
+                                        .frame(width: 70, height: 70)
                                 }
                                 .shadow(radius: 4)
                             }
 
                             Spacer()
 
-                            // Flash Button
+                            // Flash Toggle Button
                             Button(action: {
                                 toggleFlashlight()
                             }) {
@@ -95,10 +109,10 @@ struct CameraView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             }
-            .navigationBarHidden(true) // Hide navigation bar to avoid overlaps
-            .tint(Color.black) // Set custom tint color
+            .navigationBarHidden(true)
+            .tint(Color.black)
         }
-        .edgesIgnoringSafeArea(.all) // Ignore safe areas to ensure full-screen
+        .edgesIgnoringSafeArea(.all)
     }
 
     private func toggleFlashlight() {
@@ -118,7 +132,6 @@ struct CameraView: View {
         }
     }
 }
-
 
 #Preview {
     CameraView()
